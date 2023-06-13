@@ -1,8 +1,5 @@
 from mindspore import nn
 from mindspore import load_checkpoint, load_param_into_net
-from mindspore.common.initializer import Normal
-
-weight_init = Normal(mean = 0, sigma = 0.02)
 
 class ResNetBlock(nn.Cell):
     expansion = 4
@@ -10,25 +7,20 @@ class ResNetBlock(nn.Cell):
     def __init__(self, in_channel, out_channel, stride = 1):
         super().__init__()
         # first layer
-        self.conv1 = nn.Conv2d(in_channel, out_channel,
-                               kernel_size = 1, weight_init = weight_init)
+        self.conv1 = nn.Conv2d(in_channel, out_channel, kernel_size = 1)
         self.norm1 = nn.BatchNorm2d(out_channel)
 
         # second layer 
-        self.conv2 = nn.Conv2d(in_channel, out_channel,
-                               kernel_size = 3, stride = stride,
-                               weight_init = weight_init)
+        self.conv2 = nn.Conv2d(out_channel, out_channel, kernel_size = 3, stride = stride)
         self.norm2 = nn.BatchNorm2d(out_channel)
 
         # third layer
-        self.conv3 = nn.Conv2d(in_channel, out_channel * self.expansion,
-                               kernel_size = 1, weight_init = weight_init)
+        self.conv3 = nn.Conv2d(out_channel, out_channel * self.expansion, kernel_size = 1)
         self.norm3 = nn.BatchNorm2d(out_channel * self.expansion)
 
         self.relu = nn.ReLU()
         self.down_sample = nn.SequentialCell([
-            nn.Conv2d(in_channel, out_channel * self.expansion,
-                      kernel_size = 1, stride = 2, weight_init = weight_init),
+            nn.Conv2d(in_channel, out_channel * self.expansion, kernel_size = 1, stride = 2),
             nn.BatchNorm2d(out_channel * self.expansion)
             ])
 
