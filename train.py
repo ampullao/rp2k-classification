@@ -1,15 +1,23 @@
+import mindspore
+import mindspore.nn as nn
+from mindspore.dataset import vision, transforms
+from mindspore.train import Model, CheckpointConfig, ModelCheckpoint, LossMonitor
 from resnet import resnet50
+from wideresnet import wrn_50_2
+from data_preprocess import get_rp2k_dataset
 
 
-def resnet50_train():
 
-    network = resnet50()
+def train(net, epoch_size = 75, batch_size = 128, min_lr = 1e-6, max_lr = 1e-3):
 
-    epoch_size = 75
-    batch_size = 128
-    lr = nn.cosine_decay_lr(min_lr = 1e-6, max_lr = 1e-3,
+    network = net
+    lr = nn.cosine_decay_lr(min_lr = min_lr, max_lr = max_lr,
                             total_step = batch_size * epoch_size,
                             step_per_epoch = batch_size,
                             decay_epoch = epoch_size)
     opt = nn.Adam(params = network.trainable_params(), learning_rate = lr)
     loss_fn = nn.SoftmaxCrossEntropyWithLogits(sparse = True, reduction = "mean")
+    model = Model(network, loss_fn = loss_fn, optimizer = opt, metrics = {"acc"})
+
+    train_set = get_rp2k_dataset("./data/all/train", do_train=True)
+    eval_set = get_rp2k_dataset("./data/all/test", do_train=False)
