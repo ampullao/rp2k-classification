@@ -100,11 +100,16 @@ class WRN_50_2(nn.Cell):
         return nn.SequentialCell(layers)
 
 def wrn_50_2(num_classes = 2388, pretrained = False):
-    wrn_50_2_ckpt = "../LoadPretrainedModel/resnet50_224_new.ckpt"
-    model = WRN_50_2()
+    wrn_50_2_ckpt = "./checkpoints/wrn_50_2_ms.ckpt"
 
     if pretrained:
+        net = WRN_50_2(1000)
         param_dict = load_checkpoint(wrn_50_2_ckpt)
-        load_param_into_net(model, param_dict)
+        load_param_into_net(net, param_dict)
+        in_channels = net.fc.in_channels
+        head = nn.Dense(in_channels, num_classes)
+        net.fc = head
+    else:
+        net = WRN_50_2(num_classes)
     
-    return model
+    return net

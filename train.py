@@ -5,11 +5,9 @@ from resnet import resnet50
 from wideresnet import wrn_50_2
 from data_preprocess import get_rp2k_dataset
 
+def train(epoch_size = 75, batch_size = 128, min_lr = 1e-6, max_lr = 1e-3, pretrained = False):
 
-
-def train(net, epoch_size = 75, batch_size = 128, min_lr = 1e-6, max_lr = 1e-3):
-
-    network = net
+    network = wrn_50_2(pretrained=pretrained)
     lr = nn.cosine_decay_lr(min_lr = min_lr, max_lr = max_lr,
                             total_step = batch_size * epoch_size,
                             step_per_epoch = batch_size,
