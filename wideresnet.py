@@ -1,5 +1,4 @@
 import mindspore.nn as nn
-from mindspore import load_checkpoint, load_param_into_net
 
 # 定义残差块
 class Bottleneck(nn.Cell):
@@ -51,7 +50,7 @@ class WRN_50_2(nn.Cell):
         # 四个卷积组，每个卷积组由若干个残差块组成
         # 每个卷积组的第一个残差块的步长为2，其他为1
         # 每个卷积组的输出通道数为上一个卷积组的两倍
-        # WRN-50-2的宽度系数k为2，即通道数翻倍
+        # WRN-50-2的宽度系数k为2
         # WRN-50-2的残差块数为[3, 4, 6, 3]
         k = 2
         init_block_channels = 64
@@ -99,17 +98,6 @@ class WRN_50_2(nn.Cell):
     
         return nn.SequentialCell(layers)
 
-def wrn_50_2(num_classes = 2388, pretrained = False):
-    wrn_50_2_ckpt = "./checkpoints/wrn_50_2_ms.ckpt"
-
-    if pretrained:
-        net = WRN_50_2(1000)
-        param_dict = load_checkpoint(wrn_50_2_ckpt)
-        load_param_into_net(net, param_dict)
-        in_channels = net.fc.in_channels
-        head = nn.Dense(in_channels, num_classes)
-        net.fc = head
-    else:
-        net = WRN_50_2(num_classes)
-    
+def wrn_50_2(num_classes = 2388):
+    net = WRN_50_2(num_classes)
     return net

@@ -31,6 +31,7 @@ def get_rp2k_dataset(dataset_path, do_train, batch_size = 128):
     
     dataset = dataset.map(input_columns='image', operations = trans)
     dataset = dataset.map(input_columns='label', operations = transforms.TypeCast(mstype.int32))
+    dataset = dataset.shuffle(batch_size)
     dataset = dataset.batch(batch_size)
 
     return dataset
