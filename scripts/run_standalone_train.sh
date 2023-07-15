@@ -14,10 +14,6 @@
 # limitations under the License.
 # ============================================================================
 
-CURPATH="$(dirname "$0")"
-# shellcheck source=/dev/null
-. ${CURPATH}/cache_util.sh
-
 if [ $# != 2 ] && [ $# != 3 ]
 then
     echo "Usage: bash run_standalone_train.sh [DATASET_PATH] [CONFIG_PATH]"
@@ -70,12 +66,12 @@ echo "start training"
 env > env.log
 if [ $# == 2 ]
 then
-    python train.py  --data_path=$PATH1 --config_path=$CONFIG_FILE --output_dir '../outputs' &> log.txt &
+    python train.py  --data_path=$PATH1 --config_path=$CONFIG_FILE &> log.txt &
 fi
 
 if [ $# == 3 ]
 then
-    python train.py --data_path=$PATH1 --resume_ckpt=$RESUME_CKPT --config_path=$CONFIG_FILE --output_dir '../outputs' &> log.txt &
+    python train.py --data_path=$PATH1 --resume_ckpt=$RESUME_CKPT --config_path=$CONFIG_FILE &> log.txt &
 fi
 
 cd ..
