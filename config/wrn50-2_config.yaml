@@ -1,0 +1,12 @@
+# Path for local
+data_path: "../data"
+output_path: "../output"
+ckpt_path: "../checkpoint_path/"
+resume_ckpt: ""
+summary_base_dir: "../summary_dir"
+
+# Training options
+batch_size: 128
+lr: 0.1
+momentum: 0.9
+epoch_size: 20
